@@ -12,15 +12,15 @@ public class URLUtils {
 	
 	static Logger logger = LoggerFactory.getLogger(URLUtils.class);
 	
-	public static boolean isValidUrl(String url) {
+	public static String getValidUrl(String url) {
 		logger.info("Validating URL - "+url);
 		try {
 			URL urlObj = new URL(url);
 			logger.info("URL - "+url+" - GOOD");
-			return true;
+			return urlObj.getHost();
 		}catch(MalformedURLException e) {
 			logger.error("URL - "+url+" - BAD. Message - "+e.getMessage());
-			return false;
+			return null;
 		}
 	}
 
