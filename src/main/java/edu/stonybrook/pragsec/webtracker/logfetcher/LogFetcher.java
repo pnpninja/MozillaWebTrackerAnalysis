@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.logging.Level;
 
 public class LogFetcher {
-    static Logger logger = LoggerFactory.getLogger(edu.stonybrook.pragsec.webtracker.screenshot.LogFetcher.class);
+    static Logger logger = LoggerFactory.getLogger(LogFetcher.class);
 
 
     public static void main(String args[]) throws InterruptedException {
