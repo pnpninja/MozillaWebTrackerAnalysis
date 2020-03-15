@@ -5,6 +5,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
@@ -26,9 +27,14 @@ public class LogFetcher {
 
     public static void main(String args[]) throws InterruptedException {
         logger.info("Running for Chrome Browser");
-        fetchConsoleLogsChrome("https://www.buzzfeed.com", false);
+        //fetchConsoleLogsChrome("https://www.buzzfeed.com", false);
         logger.info("Running for firefox Browser");
-        fetchConsoleLogsFirefox("https://www.buzzfeed.com", false);
+        try {
+        	fetchConsoleLogsFirefox("https://www.walmart.com", false);
+        }catch(Exception e) {
+        	logger.error(e.getMessage());
+        }
+        
     }
 
     private static void fetchConsoleLogsChrome(String url, boolean trackingProtectionEnabled) throws InterruptedException{
@@ -63,6 +69,7 @@ public class LogFetcher {
         FirefoxProfile profile = profileIni.getProfile("default");
         profile.setPreference("browser.contentblocking.category", trackingProtectionEnabled ? "strict" : "standard" );
         FirefoxOptions options = new FirefoxOptions();
+        options.setLogLevel(FirefoxDriverLogLevel.TRACE);
         options.setProfile(profile);
 
         WebDriverManager.firefoxdriver().setup();
@@ -75,9 +82,19 @@ public class LogFetcher {
         WebDriver driver = new FirefoxDriver(options);
 
         driver.get(url);
-        LogEntries logEntries = driver.manage().logs().get(LogType.BROWSER);
+        logger.info("###### IM HERE TO OPEN BROWSER #######");
+        LogEntries logEntries = null;
+        try {
+        	logEntries = driver.manage().logs().get(LogType.BROWSER);
+        }catch(Exception e) {
+        	logger.error("Full Stack Trace : ",e);
+        }
+        
+        logger.info("############# SLEEPING!!! ##############");
         Thread.sleep(5000);
+        logger.info("############# I AM BACK UP ##############");
         for(LogEntry entry : logEntries) {
+        	logger.info("############# PROCESSING ##############");
             logger.info(new Date(entry.getTimestamp()) + " " + entry.getLevel() + " " + entry.getMessage());
         }
 

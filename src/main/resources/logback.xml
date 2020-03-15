@@ -45,7 +45,14 @@
         <appender-ref ref="ASYNC"/>
         <appender-ref ref="CONSOLE"/>
     </logger>
-
+    <logger name="edu.stonybrook.pragsec.webtracker.logfetcher" level="debug" additivity="false">
+        <appender-ref ref="ASYNC"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="addons.xpi" level="debug" additivity="false">
+        <appender-ref ref="ASYNC"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
     <root level="error">
         <appender-ref ref="CONSOLE"/>
     </root>
