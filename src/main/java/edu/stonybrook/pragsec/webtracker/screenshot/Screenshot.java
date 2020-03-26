@@ -23,9 +23,7 @@ public class Screenshot {
 	static Logger logger = LoggerFactory.getLogger(Screenshot.class);
 	
 	public static void main(String[] args) throws InterruptedException {
-		//ApplicationContext ctx = new AnnotationConfigApplicationContext(SingletonDB.class);
-		//ApplicationDBDetails details = ctx.getBean(ApplicationDBDetails.class);
-		//System.out.println(details.getName());
+
 		WebsiteDetailDAO websiteDetailDao = DBOperator.getInstance();
 		takeScreenshotNormal("http://automationtesting.in", false);
 		WebsiteDetail temp = new WebsiteDetail();
