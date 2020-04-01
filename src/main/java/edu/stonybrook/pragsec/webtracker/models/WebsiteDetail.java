@@ -20,10 +20,10 @@ public class WebsiteDetail {
 	@Column(nullable = false, unique = true)
 	private String URL;
 	
-	@Column(nullable = true)
+	@Column(columnDefinition = "boolean default false")
 	private boolean screenshot_taken = false;
 	
-	@Column(nullable = true)
+	@Column(columnDefinition = "boolean default false")
 	private boolean logs_fetched = false;
 	
 	@Column(nullable = true)
