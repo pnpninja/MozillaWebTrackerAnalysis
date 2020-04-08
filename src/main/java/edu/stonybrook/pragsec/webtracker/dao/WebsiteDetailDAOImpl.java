@@ -1,5 +1,8 @@
 package edu.stonybrook.pragsec.webtracker.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -57,6 +60,40 @@ public class WebsiteDetailDAOImpl implements WebsiteDetailDAO {
         entityManager.close();
 
         return websiteDetail.getId();
+	}
+
+	@Override
+	public List<WebsiteDetail> getAllWithoutScreenshot() {
+		
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        List<WebsiteDetail> websiteDetail = new ArrayList<WebsiteDetail>();
+        
+        try {
+        	transaction.begin();
+            Query query = entityManager.createQuery("from WebsiteDetail wd WHERE wd.screenshot_taken = false");
+            websiteDetail = (List<WebsiteDetail>)query.getResultList();
+        }finally {
+        	transaction.commit();
+            entityManager.close();
+		}
+     
+        return websiteDetail;
+	}
+
+	@Override
+	public void update(WebsiteDetail websiteDetail) {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        entityManager.merge(websiteDetail);
+
+        transaction.commit();
+        entityManager.close();
+
+        return;
+		
 	}
 
 }
