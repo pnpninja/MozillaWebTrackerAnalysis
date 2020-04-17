@@ -26,13 +26,6 @@ public class WebsiteDetail {
 	@Column(columnDefinition = "boolean default false")
 	private boolean screenshot_processed = false;
 	
-	public boolean isScreenshot_processed() {
-		return screenshot_processed;
-	}
-
-	public void setScreenshot_processed(boolean screenshot_processed) {
-		this.screenshot_processed = screenshot_processed;
-	}
 
 	@Column(columnDefinition = "boolean default false")
 	private boolean logs_fetched = false;
@@ -60,6 +53,14 @@ public class WebsiteDetail {
 
 	public void setScreenshot_taken(boolean screenshot_taken) {
 		this.screenshot_taken = screenshot_taken;
+	}
+	
+	public boolean isScreenshot_processed() {
+		return screenshot_processed;
+	}
+
+	public void setScreenshot_processed(boolean screenshot_processed) {
+		this.screenshot_processed = screenshot_processed;
 	}
 
 	public boolean isLogs_fetched() {

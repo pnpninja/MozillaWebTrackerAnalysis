@@ -96,7 +96,7 @@ public class WebsiteDetailDAOImpl implements WebsiteDetailDAO {
 		
 	}
 
-	@Override
+	@Override     
 	public List<WebsiteDetail> getAllWithoutScreenshotWithLimit(int limit) {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
@@ -104,7 +104,7 @@ public class WebsiteDetailDAOImpl implements WebsiteDetailDAO {
         
         try {
         	transaction.begin();
-            Query query = entityManager.createQuery("from WebsiteDetail wd WHERE wd.screenshot_taken = false");
+            Query query = entityManager.createQuery("from WebsiteDetail wd WHERE wd.screenshot_taken = false AND wd.screenshot_processed = false");
             websiteDetail = (List<WebsiteDetail>)query.setMaxResults(limit).getResultList();
         }finally {
         	transaction.commit();

@@ -9,10 +9,9 @@ import org.slf4j.LoggerFactory;
 import edu.stonybrook.pragsec.webtracker.dao.WebsiteDetailDAO;
 import edu.stonybrook.pragsec.webtracker.database.DBOperator;
 import edu.stonybrook.pragsec.webtracker.models.WebsiteDetail;
-import edu.stonybrook.pragsec.webtracker.screenshot.Screenshot;
 
 public class ScreenshotPC {
-	WebsiteDetailDAO websiteDetailDao = DBOperator.getInstance();
+	static WebsiteDetailDAO websiteDetailDao = DBOperator.getInstance();
 	List<WebsiteDetail> processList;
 	static Logger logger = LoggerFactory.getLogger(ScreenshotPC.class);
 	
@@ -21,21 +20,21 @@ public class ScreenshotPC {
 	}
 	
 	public synchronized WebsiteDetail getNextInList() {
-		if(this.processList.isEmpty()) {
+		if(processList.isEmpty()) {
 			getNext10WebsiteDetails();
-			if(this.processList.isEmpty()) {
+			if(processList.isEmpty()) {
 				return null;
 			}else {
-				return this.processList.remove(0);
+				return processList.remove(0);
 			}
 		}else {
-			return this.processList.remove(0);
+			return processList.remove(0);
 		}
 	}
 	
 	private void getNext10WebsiteDetails() {
 		logger.info("Fetching next 10 websites.....");
-		this.processList = websiteDetailDao.getAllWithoutScreenshotWithLimit(10);
+		processList = websiteDetailDao.getAllWithoutScreenshotWithLimit(10);
 	}
 
 }
