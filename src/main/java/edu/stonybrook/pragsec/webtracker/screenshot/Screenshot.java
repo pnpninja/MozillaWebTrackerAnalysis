@@ -4,6 +4,7 @@ package edu.stonybrook.pragsec.webtracker.screenshot;
 import edu.stonybrook.pragsec.webtracker.dao.WebsiteDetailDAO;
 import edu.stonybrook.pragsec.webtracker.database.DBOperator;
 import edu.stonybrook.pragsec.webtracker.models.WebsiteDetail;
+import edu.stonybrook.pragsec.webtracker.utils.ScreenshotPC;
 import edu.stonybrook.pragsec.webtracker.utils.URLUtils;
 
 import java.util.List;
@@ -24,27 +25,100 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 //browser.contentblocking.category
 public class Screenshot {
 	static Logger logger = LoggerFactory.getLogger(Screenshot.class);
-	
 	public static void main(String[] args) throws InterruptedException {
 
-		WebsiteDetailDAO websiteDetailDao = DBOperator.getInstance();
+		final WebsiteDetailDAO websiteDetailDao = DBOperator.getInstance();
 		//takeScreenshotNormal("http://automationtesting.in", false);
 		//WebsiteDetail temp = new WebsiteDetail();
 		//temp.setURL("http://automationtesting.in");
 		//websiteDetailDao.persist(temp);
 		//takeScreenshotNormal("http://www.w3schools.com/js/default.asp", true);
-		List<WebsiteDetail> t = websiteDetailDao.getAllWithoutScreenshot();
-		for(WebsiteDetail website : t) {
-			try {
-				takeScreenshotNormal(website, false);
-				takeScreenshotNormal(website, true);
-				website.setScreenshot_taken(true);
-				websiteDetailDao.update(website);
-			}catch (Exception e) {
-				logger.error("Unable to process URL - "+website.getURL()+". Reason - "+e.getMessage(),e);
+//		List<WebsiteDetail> t = websiteDetailDao.getAllWithoutScreenshot();
+//		for(WebsiteDetail website : t) {
+//			try {
+//				takeScreenshotNormal(website, false);
+//				takeScreenshotNormal(website, true);
+//				website.setScreenshot_taken(true);
+//				websiteDetailDao.update(website);
+//			}catch (Exception e) {
+//				logger.error("Unable to process URL - "+website.getURL()+". Reason - "+e.getMessage(),e);
+//			}
+//			
+//		}
+		
+		final ScreenshotPC pc = new ScreenshotPC();
+		Thread t1 = new Thread(new Runnable() {		
+			@Override
+			public void run() {
+				while(true) {
+					WebsiteDetail website = pc.getNextInList();
+					try {
+						takeScreenshotNormal(website, false);
+						takeScreenshotNormal(website, true);
+						website.setScreenshot_taken(true);
+						websiteDetailDao.update(website);
+					}catch (Exception e) {
+						logger.error("Unable to process URL - "+website.getURL()+". Reason - "+e.getMessage(),e);
+					}
+				}				
 			}
-			
-		}
+		});
+		Thread t2 = new Thread(new Runnable() {		
+			@Override
+			public void run() {
+				while(true) {
+					WebsiteDetail website = pc.getNextInList();
+					try {
+						takeScreenshotNormal(website, false);
+						takeScreenshotNormal(website, true);
+						website.setScreenshot_taken(true);
+						websiteDetailDao.update(website);
+					}catch (Exception e) {
+						logger.error("Unable to process URL - "+website.getURL()+". Reason - "+e.getMessage(),e);
+					}
+				}
+			}
+		});
+		Thread t3 = new Thread(new Runnable() {		
+			@Override
+			public void run() {
+				while(true) {
+					WebsiteDetail website = pc.getNextInList();
+					try {
+						takeScreenshotNormal(website, false);
+						takeScreenshotNormal(website, true);
+						website.setScreenshot_taken(true);
+						websiteDetailDao.update(website);
+					}catch (Exception e) {
+						logger.error("Unable to process URL - "+website.getURL()+". Reason - "+e.getMessage(),e);
+					}
+				}
+			}
+		});
+		Thread t4 = new Thread(new Runnable() {		
+			@Override
+			public void run() {
+				while(true) {
+					WebsiteDetail website = pc.getNextInList();
+					try {
+						takeScreenshotNormal(website, false);
+						takeScreenshotNormal(website, true);
+						website.setScreenshot_taken(true);
+						websiteDetailDao.update(website);
+					}catch (Exception e) {
+						logger.error("Unable to process URL - "+website.getURL()+". Reason - "+e.getMessage(),e);
+					}
+				}
+			}
+		});
+		t1.start(); 
+        t2.start();
+        t3.start(); 
+        t4.start();
+        t1.join(); 
+        t2.join();
+        t3.join(); 
+        t4.join();
 		//System.out.println(t.size());
 	}
 	

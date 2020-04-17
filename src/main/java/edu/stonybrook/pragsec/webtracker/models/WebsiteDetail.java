@@ -24,6 +24,17 @@ public class WebsiteDetail {
 	private boolean screenshot_taken = false;
 	
 	@Column(columnDefinition = "boolean default false")
+	private boolean screenshot_processed = false;
+	
+	public boolean isScreenshot_processed() {
+		return screenshot_processed;
+	}
+
+	public void setScreenshot_processed(boolean screenshot_processed) {
+		this.screenshot_processed = screenshot_processed;
+	}
+
+	@Column(columnDefinition = "boolean default false")
 	private boolean logs_fetched = false;
 	
 	@Column(nullable = true)
