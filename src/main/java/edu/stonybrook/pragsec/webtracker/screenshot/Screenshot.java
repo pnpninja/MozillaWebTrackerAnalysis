@@ -4,7 +4,6 @@ import edu.stonybrook.pragsec.webtracker.dao.WebsiteDetailDAO;
 import edu.stonybrook.pragsec.webtracker.database.DBOperator;
 import edu.stonybrook.pragsec.webtracker.models.WebsiteDetail;
 import edu.stonybrook.pragsec.webtracker.utils.ScreenshotPC;
-import edu.stonybrook.pragsec.webtracker.utils.URLUtils;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -49,6 +48,25 @@ public class Screenshot {
 //		}
 
 		final ScreenshotPC pc = new ScreenshotPC();
+		while(true) {
+			WebsiteDetail website = pc.getNextInList();
+			if(website == null) {
+				break;
+			}else {
+				try {
+					takeScreenshotNormal(website, false);
+					takeScreenshotNormal(website, true);
+					website.setScreenshot_taken(true);
+					website.setScreenshot_processed(true);
+					websiteDetailDao.update(website);
+				}catch (Exception e) {
+					logger.error("Screenshot taking for - " + website.getURL() + " has timed out", e);
+					website.setScreenshot_taken(false);
+					website.setScreenshot_processed(true);
+					websiteDetailDao.update(website);
+				}
+			}
+		}
 //		Thread t1 = new Thread(new Runnable() {		
 //			@Override
 //			public void run() {
@@ -123,89 +141,89 @@ public class Screenshot {
 //        t4.join();
 		// System.out.println(t.size());
 
-		Thread t1 = new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				while (true) {
-					final WebsiteDetail website = pc.getNextInList();
-					ExecutorService executor = Executors.newFixedThreadPool(1);
-					Future<?> future = executor.submit(new Runnable() {
-						@Override
-						public void run() {
-							try {
-								takeScreenshotNormal(website, false);
-								takeScreenshotNormal(website, true);
-								website.setScreenshot_taken(true);
-								website.setScreenshot_processed(true);
-								websiteDetailDao.update(website);
-							} catch (InterruptedException e) {
-								logger.error("Screenshot taking for - " + website.getURL() + " has timed out", e);
-								website.setScreenshot_taken(false);
-								website.setScreenshot_processed(true);
-								websiteDetailDao.update(website);
-							}
-						}
-					});
-					executor.shutdown();
-					try {
-						if (!executor.awaitTermination(150, TimeUnit.SECONDS)) {
-							logger.info("Too much time taken for processing screnshot");
-							executor.shutdownNow();
-						}
-					} catch (InterruptedException e) {
-						logger.error("DEEP ERROR - Location 1");
-						logger.error(e.getMessage());
-
-					}
-				}
-
-			}
-		});
-		Thread t2 = new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				while (true) {
-					final WebsiteDetail website = pc.getNextInList();
-					ExecutorService executor = Executors.newFixedThreadPool(1);
-					Future<?> future = executor.submit(new Runnable() {
-						@Override
-						public void run() {
-							try {
-								takeScreenshotNormal(website, false);
-								takeScreenshotNormal(website, true);
-								website.setScreenshot_taken(true);
-								website.setScreenshot_processed(true);
-								websiteDetailDao.update(website);
-							} catch (InterruptedException e) {
-								logger.error("Screenshot taking for - " + website.getURL() + " has timed out", e);
-								website.setScreenshot_taken(false);
-								website.setScreenshot_processed(true);
-								websiteDetailDao.update(website);
-							}
-						}
-					});
-					executor.shutdown();
-					try {
-						if (!executor.awaitTermination(150, TimeUnit.SECONDS)) {
-							logger.info("Too much time taken for processing screnshot");
-							executor.shutdownNow();
-						}
-					} catch (InterruptedException e) {
-						logger.error("DEEP ERROR - Location 1");
-						logger.error(e.getMessage());
-
-					}
-				}
-
-			}
-		});
-		t1.start();
-		t2.start();
-
-		t1.join();
-		t2.join();
+//		Thread t1 = new Thread(new Runnable() {
+//
+//			@Override
+//			public void run() {
+//				while (true) {
+//					final WebsiteDetail website = pc.getNextInList();
+//					ExecutorService executor = Executors.newFixedThreadPool(1);
+//					Future<?> future = executor.submit(new Runnable() {
+//						@Override
+//						public void run() {
+//							try {
+//								takeScreenshotNormal(website, false);
+//								takeScreenshotNormal(website, true);
+//								website.setScreenshot_taken(true);
+//								website.setScreenshot_processed(true);
+//								websiteDetailDao.update(website);
+//							} catch (InterruptedException e) {
+//								logger.error("Screenshot taking for - " + website.getURL() + " has timed out", e);
+//								website.setScreenshot_taken(false);
+//								website.setScreenshot_processed(true);
+//								websiteDetailDao.update(website);
+//							}
+//						}
+//					});
+//					executor.shutdown();
+//					try {
+//						if (!executor.awaitTermination(150, TimeUnit.SECONDS)) {
+//							logger.info("Too much time taken for processing screnshot");
+//							executor.shutdownNow();
+//						}
+//					} catch (InterruptedException e) {
+//						logger.error("DEEP ERROR - Location 1");
+//						logger.error(e.getMessage());
+//
+//					}
+//				}
+//
+//			}
+//		});
+//		Thread t2 = new Thread(new Runnable() {
+//
+//			@Override
+//			public void run() {
+//				while (true) {
+//					final WebsiteDetail website = pc.getNextInList();
+//					ExecutorService executor = Executors.newFixedThreadPool(1);
+//					Future<?> future = executor.submit(new Runnable() {
+//						@Override
+//						public void run() {
+//							try {
+//								takeScreenshotNormal(website, false);
+//								takeScreenshotNormal(website, true);
+//								website.setScreenshot_taken(true);
+//								website.setScreenshot_processed(true);
+//								websiteDetailDao.update(website);
+//							} catch (InterruptedException e) {
+//								logger.error("Screenshot taking for - " + website.getURL() + " has timed out", e);
+//								website.setScreenshot_taken(false);
+//								website.setScreenshot_processed(true);
+//								websiteDetailDao.update(website);
+//							}
+//						}
+//					});
+//					executor.shutdown();
+//					try {
+//						if (!executor.awaitTermination(150, TimeUnit.SECONDS)) {
+//							logger.info("Too much time taken for processing screnshot");
+//							executor.shutdownNow();
+//						}
+//					} catch (InterruptedException e) {
+//						logger.error("DEEP ERROR - Location 1");
+//						logger.error(e.getMessage());
+//
+//					}
+//				}
+//
+//			}
+//		});
+//		t1.start();
+//		t2.start();
+//
+//		t1.join();
+//		t2.join();
 	}
 
 	public static void takeScreenshotNormal(WebsiteDetail wd, boolean trackingProtectionEnabled)
@@ -220,12 +238,12 @@ public class Screenshot {
 		profile.setPreference("browser.contentblocking.category", trackingProtectionEnabled ? "strict" : "standard");
 		FirefoxOptions options = new FirefoxOptions();
 		options.setProfile(profile);
-
 		WebDriverManager.firefoxdriver().setup();
 		WebDriver driver = new FirefoxDriver(options);
+		driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
 		try {
-			driver.get("https://" + wd.getURL());
-			Shutterbug.shootPage(driver, ScrollStrategy.BOTH_DIRECTIONS, 500, true)
+			driver.get("http://" + wd.getURL());
+			Shutterbug.shootPage(driver, ScrollStrategy.BOTH_DIRECTIONS, 100, true)
 					.withName(imageName + "_tracking_" + (trackingProtectionEnabled ? "enabled" : "disabled")).save();
 			if (trackingProtectionEnabled) {
 				wd.setTracking_enabled_screenshot_location("/Users/prateek/Workspace/webtracker/screenshots/"
@@ -235,7 +253,7 @@ public class Screenshot {
 						+ imageName + "_tracking_" + (trackingProtectionEnabled ? "enabled" : "disabled") + ".png");
 			}
 
-			Thread.sleep(10000);
+			Thread.sleep(5000);
 			driver.quit();
 		} catch (Exception e) {
 			driver.quit();
